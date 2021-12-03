@@ -12,7 +12,7 @@ typedef struct s_var
 {
     char *name;
     char *permisions;
-    int date;
+    char *date;
     char *owner;
     char *group;
     int filesize;
@@ -24,17 +24,18 @@ typedef struct s_var
     int flags;
     int directories;
     
-}t_var;
+} t_var;
 
 typedef struct s_info_files 
 {
     char *name;
     char *permisions;
-    int date;
+    char *date;
     char *owner;
     char *group;
     int filesize;
     int linkcount;
+    struct s_info_files *previous;
     struct s_info_files *next;
 
 } t_info_files;

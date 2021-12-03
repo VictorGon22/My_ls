@@ -16,13 +16,15 @@ CFLAGS = -W -Werror -Wextra -Wall
 SRC		=	sources/
 
 SRC_C	=	my_ls.c 			\
+			sort.c 				\
+			sort_2.c			\
 			errorhandeling.c
 
 SRCS_C	= 	$(addprefix $(SRC), $(SRC_C))
 
 CFLAGS = -I./include
 
-NAME = 		my
+NAME = 		my_ls
 
 all: $(NAME)
 

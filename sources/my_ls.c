@@ -8,8 +8,6 @@
 #include "./../includes/libraries.h"
 #include "./../includes/structs.h"
 
-
-
 void save_flags_dir (t_var *var, int i, char **argv)
 {
     int  j = 1;
@@ -36,6 +34,7 @@ void my_ls(int argc, char **argv)
     int j = 1;
     var.flags = 0;
     var.directories = 0;
+    var.argc = argc;
     
     while (argv[i] != NULL) {
         save_flags_dir (&var, i, argv);

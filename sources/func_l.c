@@ -3,19 +3,34 @@
 #include "./../includes/libraries.h"
 #include "./../includes/structs.h"
 
-int date(char *name, char *filepath)
+char *change_date(char *str)
+{
+    char *modified = malloc(sizeof(char) * 13);
+    int i = 4;
+    int n = 0;
+
+    while (i != 16) {
+        modified[n] = str[i];
+        i++;
+        n++;
+    }
+    modified[n] = '\0';
+    return (modified);
+}
+
+char *date(char *name, char *filepath)
 {
     char *fullpath = malloc(strlen(filepath) + 2 + strlen(name));
     int mtime;
     struct stat fileStat;
-    strcpy(fullpath, filepath);
 
+    strcpy(fullpath, filepath);
     if (filepath[strlen(filepath) - 1] != '/')
         my_strcat(fullpath, "/");
     my_strcat(fullpath, name);
     stat(fullpath, &fileStat);
-    mtime = fileStat.st_mtime;
-    return (mtime);
+    free(fullpath);
+    return (change_date(ctime(&fileStat.st_atime)));
 }
 
 int link_counts(char *name, char *filepath)
@@ -27,7 +42,8 @@ int link_counts(char *name, char *filepath)
     if (filepath[strlen(filepath) - 1] != '/')
         my_strcat(fullpath, "/");
     my_strcat(fullpath, name);
-    stat(fullpath, &fileStat);   
+    stat(fullpath, &fileStat);  
+    free(fullpath);
     return (fileStat.st_nlink);
 }
 
@@ -35,13 +51,13 @@ char *user_name(char *name, char *filepath)
 {
     char *fullpath = malloc(strlen(filepath) + 2 + strlen(name));
     struct stat fileStat;
-
+    
+    strcpy(fullpath, filepath);
     if (filepath[strlen(filepath) - 1] != '/')
         my_strcat(fullpath, "/");
     my_strcat(fullpath, name);
-
     struct passwd *pw = getpwuid(fileStat.st_uid);
-
+    free(fullpath);
     return (pw->pw_name);
 }
 
@@ -50,12 +66,12 @@ char *goup_name(char *name, char *filepath)
     char *fullpath = malloc(strlen(filepath) + 2 + strlen(name));
     struct stat fileStat;
 
+    strcpy(fullpath, filepath);
     if (filepath[strlen(filepath) - 1] != '/')
         my_strcat(fullpath, "/");
     my_strcat(fullpath, name);
-
-    struct group  *gr = getpwuid(fileStat.st_gid);
-
+    struct group  *gr = getgrgid(fileStat.st_gid);
+    free(fullpath);
     return (gr->gr_name);
 }
 
@@ -64,10 +80,11 @@ int size(char *name, char *filepath)
     char *fullpath = malloc(strlen(filepath) + 2 + strlen(name));
     struct stat fileStat;
 
+    strcpy(fullpath, filepath);
     if (filepath[strlen(filepath) - 1] != '/')
         my_strcat(fullpath, "/");
     my_strcat(fullpath, name);
-    stat(fullpath, &fileStat);    
+    free(fullpath);
     return (fileStat.st_size);
 }
 
@@ -76,11 +93,10 @@ char *permisions(char *name, char *filepath)
     char *temp = malloc(sizeof(char) * 11);
     struct stat fileStat;
     char *fullpath = malloc(strlen(filepath) + 2 + strlen(name));
+
     strcpy(fullpath, filepath);
-    
     if (filepath[strlen(filepath) - 1] != '/')
         my_strcat(fullpath, "/");
-
     my_strcat(fullpath, name);
     stat(fullpath, &fileStat);
     temp[0] = (S_ISDIR(fileStat.st_mode)) ? 'd' : '-';
@@ -97,24 +113,32 @@ char *permisions(char *name, char *filepath)
     free(fullpath);
     return temp;
 }
+
 void printlinked(t_info_files *file)
 {
     t_info_files *tmp = file;
+    tmp = tmp->next;
 
-    while (tmp != NULL)
-    {
-        printf("TEST\n");
+    while (tmp != NULL) {
+        printf("%s ",tmp->permisions);
+        printf("%i ", tmp->linkcount);
+        printf("%s ", tmp->owner);
+        printf("%s ", tmp->group);
+        printf("%i ", tmp->filesize);
+        printf("%s ", tmp->date);
         printf("%s\n", tmp->name);
         tmp = tmp->next;
     }
 }
 
-
 t_info_files *ini_new_info_files(char* name, char* filepath)
 {
     t_info_files *file = malloc(sizeof(t_info_files));
     
-    file->name = name;
+    if (file == NULL)
+        printf("error\n");
+
+    file->name = strdup(name);
     file->permisions = permisions(name, filepath);
     file->date = date(name, filepath);
     file->filesize = size(name, filepath);
@@ -124,33 +148,26 @@ t_info_files *ini_new_info_files(char* name, char* filepath)
     file->next = NULL;
     return file;
 }
-/*
-void create_new(t_info_files *file, char *filepath, char *name, int tmp_)
+
+void create_new(t_info_files *file, char *filepath, char *name)
 {
     t_info_files *tmp = file;
 
-    printf("%i\n", tmp_);
-    if (tmp_ == 0) {
-        tmp = ini_new_info_files(name, filepath);
-        printf("%s\n", tmp->name);
+    while (tmp->next != NULL) {
+        tmp = tmp->next;
     }
-    else {
-        while (tmp->next != NULL) {
-            printf("%s\n", tmp->name);
-            tmp = tmp->next;
-        }
-        tmp->next = ini_new_info_files(name, filepath);
-    }
+    tmp->next = ini_new_info_files(name, filepath);
+
 }
-*/
-int main(int argc, char **argv)
+
+void func_l(char *filepath)
 {
     int i = 0;
-    char *filepath = argv[1];
+    //char *filepath = argv[1];
     t_var *var = malloc(sizeof(t_var));
     char *name;
     t_info_files *file = malloc(sizeof(t_info_files));
-    //file->next = NULL;
+    file->next = NULL;
     struct dirent *dirp;
     DIR *dp;
     int tmp = 0;
@@ -159,22 +176,12 @@ int main(int argc, char **argv)
     while ((dirp = readdir(dp)) != NULL) {
         name = dirp->d_name;
         if (name[0] != '.' && name[1] != '.') {
-            //create_new(file, filepath, name, tmp);
-            //tmp++;
-            file = ini_new_info_files(name, filepath);
-            printf("permisions: %s\n",file->permisions);
-            printf("date: %i\n", file->date);
-            printf("size: %i\n", file->filesize);
-            printf("linkcounts: %i\n", file->linkcount);
-            printf("group: %i\n", file->group);
-            printf("size: %s\n", file->owner);
-            file = file->next;
+            create_new(file, filepath, name);
+            tmp++;
         }
     }
     free(var);
-    free(file);
     printlinked(file);
-   //prints(file);
+    free(file);
     closedir(dp);
-    return (0);
 }
