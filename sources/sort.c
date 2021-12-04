@@ -8,28 +8,75 @@
 #include "./../includes/libraries.h"
 #include "./../includes/structs.h"
 
+t_info_1_file *save_info(t_info_files *file)
+{
+    t_info_1_file *tmp = (t_info_1_file *) malloc(sizeof(t_info_1_file));
 
-void sortLinkedList(int numberOfNodes, t_info_files *firstNode)
+    tmp->name = file->name;
+    tmp->permisions = file->permisions;
+    tmp->date = file->date;
+    tmp->owner = file->owner;
+    tmp->group = file->group;
+    tmp->filesize = file->filesize;
+    tmp->linkcount = file->linkcount;
+    return (tmp);
+}
+
+t_info_files *change_info(t_info_1_file *file)
+{
+    t_info_files *tmp = (t_info_files *) malloc(sizeof(t_info_files));
+
+    tmp->name = file->name;
+    tmp->permisions = file->permisions;
+    tmp->date = file->date;
+    tmp->owner = file->owner;
+    tmp->group = file->group;
+    tmp->filesize = file->filesize;
+    tmp->linkcount = file->linkcount;
+    return (tmp);
+}
+t_info_files *sortSize(int numberOfNodes, t_info_files *firstNode, int reverse)
 {
     int nodeCtr;
     int ctr;
     int nodeDataCopy;
     t_info_files *currentNode;
     t_info_files *nextNode;
+    t_info_1_file *tmp = (t_info_1_file *) malloc(sizeof(t_info_1_file));
+    t_info_1_file *tmp2= (t_info_1_file *) malloc(sizeof(t_info_1_file));
 
+    printf("%d\n", numberOfNodes);
     for (nodeCtr = numberOfNodes - 2; nodeCtr >= 0; nodeCtr--) {
         currentNode = firstNode;
         nextNode = currentNode->next;
-        for (ctr = 0; ctr <= nodeCtr; ctr++) {
-            if (currentNode->filesize > nextNode->filesize) {
-                nodeDataCopy = currentNode->filesize;
-                currentNode->filesize = nextNode->filesize;
-                nextNode->filesize = nodeDataCopy;
+
+        if (reverse == 1) {
+            for (ctr = 0; ctr <= nodeCtr; ctr++) {
+                
+                if (currentNode->filesize > nextNode->filesize) {
+                    tmp = save_info(currentNode);
+                    tmp2 = save_info(nextNode);
+                    currentNode = change_info(tmp2);
+                    currentNode = currentNode->next;
+                    currentNode = change_info(tmp);
+                    printf("ENTRa");
+                    //firstNode->name = "ENTRA";
+                    //printf("size: %s\n", firstNode->name);
+                    //currentNode->filesize = nextNode->filesize;
+                    //nextNode->filesize = nodeDataCopy;
+                    //currentNode = nextNode;
+                }
+                
+                //else
+                  //  
+                currentNode = nextNode;
+                nextNode = nextNode->next;
             }
-            currentNode = nextNode;
-            nextNode = nextNode->next;
+
         }
+        
     }
+    return (currentNode);
 }
 
 

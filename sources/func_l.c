@@ -23,7 +23,7 @@ char *date(char *name, char *fullpath)
     int mtime;
     struct stat fileStat;
     stat(fullpath, &fileStat);
-    return (change_date(ctime(&fileStat.st_atime)));
+    return (change_date(ctime(&fileStat.st_mtime)));
 }
 
 int total(char *name, char *fullpath)
@@ -80,12 +80,36 @@ char *permisions(char *name, char *fullpath)
     return temp;
 }
 
-void printlinked(t_info_files *file)
+void printlinked_d(t_info_files *file)
 {
     t_info_files *tmp = file;
     tmp = tmp->next;
 
-    printf("total %d\n", tmp->total);
+    while (tmp != NULL) {
+        printf("%s ",tmp->permisions);
+        printf("%i ", tmp->linkcount);
+        printf("%s ", tmp->owner);
+        printf("%s ", tmp->group);
+        printf("%i ", tmp->filesize);
+        printf("%s ", tmp->date);
+        printf("%s\n", tmp->name);
+        tmp = tmp->next;
+    }
+    printf("\n");
+}
+
+void printlinked(t_info_files *file)
+{
+    t_info_files *tmp = file;
+    int total = 0;
+    tmp = tmp->next;
+    while (tmp != NULL) {
+        total += (tmp->total);
+        tmp = tmp->next;
+    }
+    tmp = file;
+    tmp = tmp->next;
+    printf("total %d\n", total / 2);
     while (tmp != NULL) {
         printf("%s ",tmp->permisions);
         printf("%i ", tmp->linkcount);
@@ -105,7 +129,6 @@ t_info_files *ini_new_info_files(char* name, char* filepath)
     
     if (file == NULL)
         printf("error\n");
-
     file->name = strdup(name);
     file->permisions = permisions(name, filepath);
     file->date = date(name, filepath);
@@ -130,8 +153,6 @@ void create_new(t_info_files *file, char *filepath, char *name)
 
 char *func_fullpath(char *filepath, char *name, char *fullpath)
 {
-    //char *fullpath = malloc(strlen(filepath) + 2 + strlen(name));
-
     strcpy(fullpath, filepath);
     if (filepath[strlen(filepath) - 1] != '/')
         my_strcat(fullpath, "/");
@@ -146,7 +167,7 @@ void func_l(char *filepath)
     file->next = NULL;
     struct dirent *dirp;
     char *fullpath;
-    int tmp = 0;
+    int numberOfNodes = 0;
     DIR *dp;
 
     dp = opendir(filepath);
@@ -155,11 +176,9 @@ void func_l(char *filepath)
         fullpath = malloc(strlen(filepath) + 2 + strlen(dirp->d_name));
         if (dirp->d_name[0] != '.' && dirp->d_name[1] != '.') {
             create_new(file, func_fullpath(filepath, dirp->d_name, fullpath), dirp->d_name);
-            tmp++;
+            numberOfNodes++;
         }
     }
-    //sort_file_name(file, 0, tmp);
-    sortLinkedList(numberOfNodes, firstNode);
     free(fullpath);
     free(var);
     printlinked(file);
@@ -167,7 +186,7 @@ void func_l(char *filepath)
     closedir(dp);
 }
 
-void func_d(char *filepath)
+void func_ld(char *filepath)
 {
     t_var *var = malloc(sizeof(t_var));
     t_info_files *file = malloc(sizeof(t_info_files));
@@ -175,10 +194,14 @@ void func_d(char *filepath)
     int tmp = 0;
 
     create_new(file, filepath, filepath);
-
     free(var);
-    printlinked(file);
+    printlinked_d(file);
     free(file);
+}
+
+void func_d(char *filepath)
+{
+    printf("%s\n", filepath);
 }
 
 void func_w(char *filepath)

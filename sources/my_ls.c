@@ -50,7 +50,12 @@ void my_ls(int argc, char **argv)
         j = 0;
         while (j < var.flags)
         {
-            func_pointer(var.array_directory[i], var.array_flags[j]);
+            if ((var.array_flags[j] == 'l' && var.array_flags[j + 1] == 'd') || (var.array_flags[j] == 'd' && var.array_flags[j + 1] == 'l'))
+            {
+                func_ld(var.array_directory[i]);
+                j += 2;
+            } else
+                func_pointer(var.array_directory[i], var.array_flags[j]);
             j++;
         }
         if (var.flags == 0)

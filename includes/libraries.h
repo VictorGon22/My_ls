@@ -28,17 +28,17 @@ void errormanager_directories(char *dir);
 char *my_strcat(char *dest, char const *src);
 int func_pointer(char *filepath, char type);
 void func_l(char *filepath);
+void func_ld(char *filepath);
 void func_d(char *filepath);
 void func_w(char *filepath);
-void sortLinkedList(int numberOfNodes, t_info_files *);
-
+t_info_files *sortSize(int numberOfNodes, t_info_files *firstNode, int reverse);
 
 t_info_files *sort_file_size_reversed(t_info_files *list, int len, int i);
 t_info_files *sort_file_size(t_info_files *list, int reverse);
 void sort_file_name_reversed(t_info_files *list, int i, int len);
 void sort_file_name_notreversed(t_info_files *list, int i, int len);
 void sort_file_name(t_info_files *list, int reverse, int len);
-void save_info (t_info_files *file, t_info_files *tmp);
+//void save_info (t_info_files *file, t_info_1_file *tmp);
 t_info_files *sort_file_size_notreversed(t_info_files *list, int len, int i);
 
 #endif
