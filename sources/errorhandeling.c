@@ -11,9 +11,9 @@
 int error_num_elements (int num_flags, int num_directories, int argc)
 {
     if (num_flags < 1 || num_directories < 1 || argc < 3) {
-        printf("%d\n", num_flags);
-        printf("%d\n", num_directories);
-        printf("%d\n", argc);
+        //printf("%d\n", num_flags);
+        //printf("%d\n", num_directories);
+        //printf("%d\n", argc);
         return (1);
     }
     return (0);
@@ -25,7 +25,7 @@ int error_flags (char *flags)
     int j = 0;
     int inbase = 0;
     char base[] = "adFilahrRsStX";
-    
+
     while (flags[i] != '\0') {
         j = 0;
         while (base[j] != '\0') {
@@ -41,18 +41,15 @@ int error_flags (char *flags)
     return (0);
 }
 
-int error_directories (char **dir)
+int error_directories (char *dir)
 {
     int i = 0;
     DIR *dp;
     struct stat fileStat;
-
-    while (dir[i] != NULL) {
-        dp = opendir(dir[i]);
-        if (dp == NULL && stat(dir[i], &fileStat))
-            return (1);
-        i++;
-    }
+    dp = opendir(dir);
+    if (dp == NULL && stat(dir, &fileStat))
+        return (1);
+    i++;
     return (0);
 }
 
@@ -64,8 +61,10 @@ void errormanager_general (t_var *var)
     }
 }
 
-void errormanager_directories (t_var *var)
+void errormanager_directories (char *filepath)
 {
-    if (error_directories (var->array_directory)) 
+    if (error_directories (filepath)) {
+        printf("ERROR2");
         exit (84);
+    }
 }

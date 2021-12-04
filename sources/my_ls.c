@@ -40,7 +40,23 @@ void my_ls(int argc, char **argv)
         save_flags_dir (&var, i, argv);
         i++;
     }
-    errormanager_general(&var);
+    //errormanager_general(&var);
+    i = 0;
+    j = 0;
+    while (i < var.directories)
+    {
+        if (var.directories > 1)
+            printf("%s:\n", var.array_directory[i]);
+        j = 0;
+        while (j < var.flags)
+        {
+            func_pointer(var.array_directory[i], var.array_flags[j]);
+            j++;
+        }
+        if (var.flags == 0)
+            func_pointer(var.array_directory[i], 'w'); 
+        i++;
+    }
 }
 
 int main (int argc, char **argv)

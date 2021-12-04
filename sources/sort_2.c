@@ -8,33 +8,31 @@
 
 #include "./../includes/libraries.h"
 #include "./../includes/structs.h"
-
-t_info_files save_info (t_info_files file)
+/*
+void save_info(t_info_files *file, t_info_files *tmp)
 {
-    t_info_files temp;
-
-    temp.name = file.name;
-    temp.permisions = file.permisions;
-    temp.date = file.date;
-    temp.owner = file.owner;
-    temp.group = file.group;
-    temp.filesize = file.filesize;
-    temp.linkcount = file.linkcount;
-    return (temp);
-}
-
+    tmp->data->name = file->data->name;
+    tmp->data->permisions = file->data->permisions;
+    tmp->data->date = file->data->date;
+    tmp->data->owner = file->data->owner;
+    tmp->data->group = file->data->group;
+    tmp->data->filesize = file->data->filesize;
+    tmp->data->linkcount = file->data->linkcount;
+}*/
+/*
 t_info_files *sort_file_size_notreversed(t_info_files *list, int len, int i)
 {
     int j = i;
-    t_info_files temp;
+    t_info_files tmp;
 
     while (j < len) {
         if (list[i].filesize > list[j].filesize) {
-            temp = save_info (list[i]);
+            tmp = save_info (list[i]);
             list[i] = save_info(list[j]);
-            list[j] = save_info(temp);
+            list[j] = save_info(tmp);
         }
         j++;
     }
     return list;
 }
+*/

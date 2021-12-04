@@ -29,11 +29,11 @@ void fill_flags(calculator *flags)
 {
     flags[0].op = 'l';
     flags[0].ptr = &func_l;
-    /*flags[1].op = '-d';
+    flags[1].op = 'd';
     flags[1].ptr = &func_d;
-    flags[2].op = '-F';
-    flags[2].ptr = &func_F;
-    flags[3].op = '-i';
+    flags[2].op = 'w';
+    flags[2].ptr = &func_w;
+    /*flags[3].op = '-i';
     flags[3].ptr = &func_i;
     flags[4].op = '-l';
     flags[4].ptr = &func_l;
@@ -49,10 +49,10 @@ void fill_flags(calculator *flags)
 int func_pointer(char *filepath, char type)
 {
     int i = 0;
-    calculator flags[1];
+    calculator flags[3];
 
     fill_flags(flags);
-    while (i < 1) {
+    while (i < 3) {
         if (type == flags[i].op)
             (*(flags[i].ptr))(filepath);
         i++;

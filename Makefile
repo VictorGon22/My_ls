@@ -18,6 +18,9 @@ SRC		=	sources/
 SRC_C	=	my_ls.c 			\
 			sort.c 				\
 			sort_2.c			\
+			func_l.c			\
+			my_strcat.c 		\
+			function_pointers.c	\
 			errorhandeling.c
 
 SRCS_C	= 	$(addprefix $(SRC), $(SRC_C))
